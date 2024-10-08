@@ -1,0 +1,29 @@
+# Ignore compiled binaries and executables
+*.exe
+*.out
+*.so
+*.dll
+*.env
+
+# Ignore object files
+*.o
+*.obj
+
+# Ignore build directories
+build/
+log/
+bin/
+
+# Ignore IDE-specific files
+.vscode/
+.idea/
+*.suo
+*.user
+*.sdf
+
+# Ignore dependency directories or files
+/lib/
+/vendor/
+
+# Ignore any specific files or directories relevant to your project setup
+bags/
