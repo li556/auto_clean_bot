@@ -13,6 +13,7 @@
 build/
 log/
 bin/
+install/
 
 # Ignore IDE-specific files
 .vscode/
