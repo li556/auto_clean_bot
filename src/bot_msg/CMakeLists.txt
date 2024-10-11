@@ -12,7 +12,15 @@ find_package(geometry_msgs REQUIRED)
 find_package(std_msgs REQUIRED)
 
 set(msg_files
-  ""
+  "msg/ADCTrajectory.msg"
+  "msg/ChassisInfo.msg"
+  "msg/ControlCmd.msg"
+  "msg/LaneInfo.msg"
+  "msg/Lanes.msg"
+  "msg/LocalizationInfo.msg"
+  "msg/Obstacles.msg"
+  "msg/ObstacleInfo.msg"
+  "msg/TrajectoryPoint.msg"
 )
 set(srv_files
   ""
@@ -21,7 +29,7 @@ set(srv_files
 rosidl_generate_interfaces(${PROJECT_NAME}
   ${msg_files}
   ${srv_files}
-  DEPENDENCIES geometry_msgs
+  DEPENDENCIES geometry_msgs std_msgs
 )
 
 ament_export_dependencies(rosidl_default_runtime)
