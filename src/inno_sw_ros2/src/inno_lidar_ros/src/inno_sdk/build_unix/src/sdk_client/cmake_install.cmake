@@ -1,4 +1,4 @@
-# Install script for directory: /home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_client
+# Install script for directory: /home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_client
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -35,10 +35,5 @@ endif()
 # Is this installation the result of a crosscompile?
 if(NOT DEFINED CMAKE_CROSSCOMPILING)
   set(CMAKE_CROSSCOMPILING "FALSE")
-endif()
-
-# Set default install directory permissions.
-if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "/usr/bin/objdump")
 endif()
 

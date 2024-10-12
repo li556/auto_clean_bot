@@ -1,36 +1,47 @@
-
-# Consider dependencies only in project.
-set(CMAKE_DEPENDS_IN_PROJECT_ONLY OFF)
-
 # The set of languages for which implicit dependencies are needed:
 set(CMAKE_DEPENDS_LANGUAGES
+  "CXX"
+  )
+# The set of files for implicit dependencies of each language:
+set(CMAKE_DEPENDS_CHECK_CXX
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/api_common.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/api_common.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/cframe_converter.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/cframe_converter.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_range_color.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_range_color.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_range_image.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_range_image.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_recorder.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_recorder.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_zlib.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_zlib.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/rosbag_recorder.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/rosbag_recorder.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/inno_lidar_packet_utils.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/inno_lidar_packet_utils.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/lidar_communication.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/lidar_communication.cpp.o"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/resource_stats.cpp" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/resource_stats.cpp.o"
+  )
+set(CMAKE_CXX_COMPILER_ID "GNU")
+
+# Preprocessor definitions for this target.
+set(CMAKE_TARGET_DEFINITIONS_CXX
+  "_GLIBCXX_USE_CXX11_ABI=0"
+  "innolidarsdkcommon_EXPORTS"
   )
 
-# The set of dependency files which are needed:
-set(CMAKE_DEPENDS_DEPENDENCY_FILES
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/api_common.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/api_common.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/api_common.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/cframe_converter.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/cframe_converter.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/cframe_converter.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_range_color.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_range_color.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_range_color.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_range_image.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_range_image.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_range_image.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_recorder.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_recorder.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_recorder.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/png_zlib.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_zlib.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/png_zlib.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/converter/rosbag_recorder.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/rosbag_recorder.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/converter/rosbag_recorder.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/inno_lidar_packet_utils.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/inno_lidar_packet_utils.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/inno_lidar_packet_utils.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/lidar_communication.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/lidar_communication.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/lidar_communication.cpp.o.d"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/src/sdk_common/resource_stats.cpp" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/resource_stats.cpp.o" "gcc" "src/sdk_common/CMakeFiles/innolidarsdkcommon.dir/resource_stats.cpp.o.d"
+# The include file search paths:
+set(CMAKE_CXX_TARGET_INCLUDE_PATH
+  "../src/sdk_common/../.."
+  "../src/sdk_common/../../.."
+  "../src/sdk_common/../../src"
+  "../src/sdk_common/../../../src"
   )
 
 # Pairs of files generated by the same build rule.
 set(CMAKE_MULTIPLE_OUTPUT_PAIRS
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so" "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so.0.0.0"
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so.0" "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so.0.0.0"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so.0.0.0"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so.0" "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/lib/libinnolidarsdkcommon.so.0.0.0"
   )
 
 
 # Targets to which this target links.
 set(CMAKE_TARGET_LINKED_INFO_FILES
-  "/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/utils/CMakeFiles/innolidarutils.dir/DependInfo.cmake"
+  "/home/nvidia/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/src/utils/CMakeFiles/innolidarutils.dir/DependInfo.cmake"
   )
 
 # Fortran module output directory.

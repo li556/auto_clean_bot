@@ -4,6 +4,8 @@
 *.so
 *.dll
 *.env
+*.log
+*.cmake
 
 # Ignore object files
 *.o
@@ -14,6 +16,8 @@ build/
 log/
 bin/
 install/
+build_unix/
+build_windows/
 
 # Ignore IDE-specific files
 .vscode/
