@@ -1,0 +1,15 @@
+Performing C++ SOURCE FILE Test HAS_MACRO_PREFIX_MAP_GCCXX failed with the following output:
+Change Dir: /home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/CMakeFiles/CMakeTmp
+
+Run Build Command(s):/usr/bin/gmake -f Makefile cmTC_55112/fast && /usr/bin/gmake  -f CMakeFiles/cmTC_55112.dir/build.make CMakeFiles/cmTC_55112.dir/build
+gmake[1]: Entering directory '/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/CMakeFiles/CMakeTmp'
+Building CXX object CMakeFiles/cmTC_55112.dir/src.cxx.o
+/usr/bin/c++ -DHAS_MACRO_PREFIX_MAP_GCCXX  -std=gnu++11 -fPIC    -fmacro-prefix-map -o CMakeFiles/cmTC_55112.dir/src.cxx.o -c /home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/CMakeFiles/CMakeTmp/src.cxx
+c++: error: unrecognized command-line option '-fmacro-prefix-map'; did you mean '-fmacro-prefix-map='?
+gmake[1]: *** [CMakeFiles/cmTC_55112.dir/build.make:78: CMakeFiles/cmTC_55112.dir/src.cxx.o] Error 1
+gmake[1]: Leaving directory '/home/liemr/auto_clean_bot/src/inno_sw_ros2/src/inno_lidar_ros/src/inno_sdk/build_unix/CMakeFiles/CMakeTmp'
+gmake: *** [Makefile:127: cmTC_55112/fast] Error 2
+
+
+Source file was:
+int main() { return 0; }
