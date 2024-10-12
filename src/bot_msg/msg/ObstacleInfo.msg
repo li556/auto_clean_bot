@@ -3,8 +3,8 @@ std_msgs/Header header
 uint32 id
 float64 position_x 
 float64 position_y
-float64 position_z
 float64 heading  # 运动方向
+float64 position_z
 float64 velocity_x
 float64 velocity_y
 float64 velocity
