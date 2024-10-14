@@ -21,40 +21,11 @@
 
 class PerceptionNode : public rclcpp::Node {
   public:
-    PerceptionNode() : Node("perception") {
-        lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-            "/ouster/points", 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
-
-        // lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-        //     "/lidar/os_points", 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
-        // radar_sub_ = this->create_subscription<conti_radar::msg::RadarInfoArray>(
-        //     "/radar/info_array", 10, std::bind(&PerceptionNode::RadarInfoArrayCallback, this,
-        //     std::placeholders::_1));
-        obstacle_pub_ = this->create_publisher<bot_msg::msg::Obstacles>("/perception/obstacles", 10);
-        marker_pub_ = this->create_publisher<visualization_msgs::msg::Marker>("/perception/marker", 10);
-        tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
-        tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
-        static_broadcaster_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(this);
-
-#if DEBUG_PUBLISH_POINT_CLOUD
-        // 在构造函数中初始化发布器
-        original_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/original_cloud", 10);
-        filtered_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/filtered_cloud", 10);
-        ground_seg_cloud_pub_ =
-            this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/ground_seg_cloud", 10);
-        clustered_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/clustered_cloud", 10);
-#endif
-        // 配置参数初始化
-        // std::string yaml_file_path = "/home/nvidia/bhss_ros2/config/perception_config.yaml";
-        // // 加载 YAML 文件,注意是绝对路径
-        // InitParameters(yaml_file_path);
-        // // 初始化静态变换 broadcaster
-        // InitStaticTransformBroadcaster(yaml_file_path);
-    }
+    PerceptionNode();
 
   private:
-    void InitParameters(const std::string &yaml_file_path);
-    void InitStaticTransformBroadcaster(const std::string &yaml_file_path);
+    void InitParameters();
+    void InitStaticTransformBroadcaster();
     void PointClould2Callback(const sensor_msgs::msg::PointCloud2::SharedPtr pnt_cloud);
     void RemoveInvalidPoints(pcl::PointCloud<pcl::PointXYZ>::Ptr cloud);
     void FillAndPublishObstacleMarker(const bot_msg::msg::Obstacles &obstacle_array_msg, int obstacles_type);

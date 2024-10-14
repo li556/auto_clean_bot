@@ -43,6 +43,7 @@ include_directories(
   ${tf2_ros_INCLUDE_DIRS}
   ${PCL_INCLUDE_DIRS}
   ${pcl_ros_INCLUDE_DIRS}
+
 )
 
 # Create your node executable
@@ -52,6 +53,8 @@ add_executable(perception_node src/perception.cpp src/main.cpp)
 add_definitions(${PCL_DEFINITIONS})
 link_directories(${PCL_LIBRARY_DIRS})
 
+
+
 # Specify libraries to link against
 target_link_libraries(perception_node
   ${rclcpp_LIBRARIES}
@@ -59,8 +62,6 @@ target_link_libraries(perception_node
   ${PCL_LIBRARIES}
   ${tf2_ros_LIBRARIES}
   yaml-cpp
-  bot_msg  # 使用 ROS 2 的命名方式链接库
-  # custom_msgs
 )
 
 # Ensure the generated headers are included in the build
@@ -81,7 +82,7 @@ install(TARGETS
   DESTINATION lib/${PROJECT_NAME}
 )
 
-install(DIRECTORY
+install(DIRECTORY config
 launch DESTINATION share/${PROJECT_NAME})
 
 # Export dependencies and package

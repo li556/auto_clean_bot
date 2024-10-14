@@ -11,48 +11,62 @@
 #include <perception/perception.h>
 // #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
-void PerceptionNode::InitStaticTransformBroadcaster(const std::string &yaml_file_path) {
-    // 配置默认化静态变换参数
-    lidar_base_x_ = 0.0;
-    lidar_base_y_ = 0.0;
-    lidar_base_z_ = 0.0;
-    lidar_base_yaw_ = 0.0;
-    lidar_base_pitch_ = 0.0;
-    lidar_base_roll_ = 0.0;
-    radar_base_x_ = 0.0;
-    radar_base_y_ = 0.0;
-    radar_base_z_ = 0.0;
-    radar_base_yaw_ = 0.0;
-    radar_base_pitch_ = 0.0;
-    radar_base_roll_ = 0.0;
+PerceptionNode::PerceptionNode() : Node("perception_node") {
+    lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+        "/ouster/points", 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
 
-    YAML::Node config;
-    try {
-        // 尝试加载 YAML 文件
-        config = YAML::LoadFile(yaml_file_path);
-        // std::cout << "YAML File Loaded:\n" << config << std::endl; // 打印 YAML 文件内容
-    } catch (const YAML::Exception &e) {
-        std::cerr << "Error loading YAML file: " << e.what() << std::endl;
-        return;
-    }
-    try {
-        // 先进入 "perception_node" 节点，然后进入 "ros__parameters" 节点
-        YAML::Node params = config["perception_node"]["ros__parameters"];
-        lidar_base_x_ = params["lidar_base_x"].as<double>();
-        lidar_base_y_ = params["lidar_base_y"].as<double>();
-        lidar_base_z_ = params["lidar_base_z"].as<double>();
-        lidar_base_yaw_ = DEG2RAD(params["lidar_base_yaw"].as<double>());
-        lidar_base_pitch_ = DEG2RAD(params["lidar_base_pitch"].as<double>());
-        lidar_base_roll_ = DEG2RAD(params["lidar_base_roll"].as<double>());
-        radar_base_x_ = params["radar_base_x"].as<double>();
-        radar_base_y_ = params["radar_base_y"].as<double>();
-        radar_base_z_ = params["radar_base_z"].as<double>();
-        radar_base_yaw_ = DEG2RAD(params["radar_base_yaw"].as<double>());
-        radar_base_pitch_ = DEG2RAD(params["radar_base_pitch"].as<double>());
-        radar_base_roll_ = DEG2RAD(params["radar_base_roll"].as<double>());
-    } catch (const YAML::Exception &e) {
-        std::cerr << "Error loading or parsing YAML file: " << e.what() << std::endl;
-    }
+    // lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+    //     "/lidar/os_points", 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
+    // radar_sub_ = this->create_subscription<conti_radar::msg::RadarInfoArray>(
+    //     "/radar/info_array", 10, std::bind(&PerceptionNode::RadarInfoArrayCallback, this,
+    //     std::placeholders::_1));
+    obstacle_pub_ = this->create_publisher<bot_msg::msg::Obstacles>("/perception/obstacles", 10);
+    marker_pub_ = this->create_publisher<visualization_msgs::msg::Marker>("/perception/marker", 10);
+    tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
+    tf_listener_ = std::make_shared<tf2_ros::TransformListener>(*tf_buffer_);
+    static_broadcaster_ = std::make_shared<tf2_ros::StaticTransformBroadcaster>(this);
+
+#if DEBUG_PUBLISH_POINT_CLOUD
+    // 在构造函数中初始化发布器
+    original_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/original_cloud", 10);
+    filtered_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/filtered_cloud", 10);
+    ground_seg_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/ground_seg_cloud", 10);
+    clustered_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/clustered_cloud", 10);
+#endif
+    // 加载yaml配置参数
+    InitParameters();
+    // 初始化静态变换 broadcaster
+    InitStaticTransformBroadcaster();
+}
+
+void PerceptionNode::InitStaticTransformBroadcaster() {
+    // 设置默认值并声明参数
+    this->declare_parameter<double>("lidar_base_x", 0.0);
+    this->declare_parameter<double>("lidar_base_y", 0.0);
+    this->declare_parameter<double>("lidar_base_z", 0.0);
+    this->declare_parameter<double>("lidar_base_yaw", 0.0);
+    this->declare_parameter<double>("lidar_base_pitch", 0.0);
+    this->declare_parameter<double>("lidar_base_roll", 0.0);
+    this->declare_parameter<double>("radar_base_x", 0.0);
+    this->declare_parameter<double>("radar_base_y", 0.0);
+    this->declare_parameter<double>("radar_base_z", 0.0);
+    this->declare_parameter<double>("radar_base_yaw", 0.0);
+    this->declare_parameter<double>("radar_base_pitch", 0.0);
+    this->declare_parameter<double>("radar_base_roll", 0.0);
+
+    // 获取参数值
+    lidar_base_x_ = this->get_parameter("lidar_base_x").as_double();
+    lidar_base_y_ = this->get_parameter("lidar_base_y").as_double();
+    lidar_base_z_ = this->get_parameter("lidar_base_z").as_double();
+    lidar_base_yaw_ = DEG2RAD(this->get_parameter("lidar_base_yaw").as_double());
+    lidar_base_pitch_ = DEG2RAD(this->get_parameter("lidar_base_pitch").as_double());
+    lidar_base_roll_ = DEG2RAD(this->get_parameter("lidar_base_roll").as_double());
+    radar_base_x_ = this->get_parameter("radar_base_x").as_double();
+    radar_base_y_ = this->get_parameter("radar_base_y").as_double();
+    radar_base_z_ = this->get_parameter("radar_base_z").as_double();
+    radar_base_yaw_ = DEG2RAD(this->get_parameter("radar_base_yaw").as_double());
+    radar_base_pitch_ = DEG2RAD(this->get_parameter("radar_base_pitch").as_double());
+    radar_base_roll_ = DEG2RAD(this->get_parameter("radar_base_roll").as_double());
 
     // 打印输出
     RCLCPP_INFO(this->get_logger(), "Lidar base transform: x=%f, y=%f, z=%f, yaw=%f, pitch=%f, roll=%f", lidar_base_x_,
@@ -99,50 +113,46 @@ void PerceptionNode::InitStaticTransformBroadcaster(const std::string &yaml_file
     RCLCPP_INFO(this->get_logger(), "Published static transforms for radar and lidar");
 }
 
-void PerceptionNode::InitParameters(const std::string &yaml_file_path) {
-    // 设置默认值
-    max_height_ = 1.5;
-    min_height_ = 0.2;
-    vehicle_height_ = 1.5;
-    vehicle_width_ = 2.0;
-    vehicle_length_ = 4.0;
-    radar_height_ = 1.0;
-    cluster_tolerance_ = 0.1;
-    cluster_min_size_ = 30;
-    cluster_max_size_ = 20000;
-    leaf_size_ = 0.05;
-    YAML::Node config;
-    try {
-        // 尝试加载 YAML 文件
-        config = YAML::LoadFile(yaml_file_path);
-        // std::cout << "YAML File Loaded:\n" << config << std::endl; // 打印 YAML 文件内容
-    } catch (const YAML::Exception &e) {
-        std::cerr << "Error loading YAML file: " << e.what() << std::endl;
-        return;
-    }
-    try {
-        // 先进入 "perception_node" 节点，然后进入 "ros__parameters" 节点
-        YAML::Node params = config["perception_node"]["ros__parameters"];
-        max_height_ = params["max_height"].as<double>();
-        min_height_ = params["min_height"].as<double>();
-        vehicle_height_ = params["vehicle_height"].as<double>();
-        vehicle_width_ = params["vehicle_width"].as<double>();
-        vehicle_length_ = params["vehicle_length"].as<double>();
-        radar_height_ = params["radar_height"].as<double>();
-        cluster_tolerance_ = params["cluster_tolerance"].as<double>();
-        cluster_min_size_ = params["min_cluster_size"].as<int>();
-        cluster_max_size_ = params["max_cluster_size"].as<int>();
-        leaf_size_ = params["leaf_size"].as<float>();
-        roi_width_ = params["roi_width"].as<float>();
-        enable_visualization_ = params["enable_visualization"].as<bool>();
-        enable_calculate_process_time_ = params["enable_calculate_process_time"].as<bool>();
-        enable_use_roi_ = params["enable_use_roi"].as<bool>();
-        enable_downsample_ = params["enable_downsample"].as<bool>();
-        segment_ground_type_ = params["segment_ground_type"].as<int>();
-        plane_point_percent_ = params["plane_point_percent"].as<float>();
-    } catch (const YAML::Exception &e) {
-        std::cerr << "Error loading or parsing YAML file: " << e.what() << std::endl;
-    }
+void PerceptionNode::InitParameters() {
+    // 设置默认值并声明参数
+    this->declare_parameter<double>("max_height", 1.5);
+    this->declare_parameter<double>("min_height", 0.2);
+    this->declare_parameter<double>("vehicle_height", 1.5);
+    this->declare_parameter<double>("vehicle_width", 2.0);
+    this->declare_parameter<double>("vehicle_length", 4.0);
+    this->declare_parameter<double>("radar_height", 1.0);
+    this->declare_parameter<double>("cluster_tolerance", 0.1);
+    this->declare_parameter<int>("min_cluster_size", 30);
+    this->declare_parameter<int>("max_cluster_size", 20000);
+    this->declare_parameter<float>("leaf_size", 0.05);
+    this->declare_parameter<float>("roi_width", 1.0);
+    this->declare_parameter<bool>("enable_visualization", true);
+    this->declare_parameter<bool>("enable_calculate_process_time", false);
+    this->declare_parameter<bool>("enable_use_roi", true);
+    this->declare_parameter<bool>("enable_downsample", false);
+    this->declare_parameter<int>("segment_ground_type", 1);
+    this->declare_parameter<float>("plane_point_percent", 0.5);
+
+    // 获取参数值
+    max_height_ = this->get_parameter("max_height").as_double();
+    min_height_ = this->get_parameter("min_height").as_double();
+    vehicle_height_ = this->get_parameter("vehicle_height").as_double();
+    vehicle_width_ = this->get_parameter("vehicle_width").as_double();
+    vehicle_length_ = this->get_parameter("vehicle_length").as_double();
+    radar_height_ = this->get_parameter("radar_height").as_double();
+    cluster_tolerance_ = this->get_parameter("cluster_tolerance").as_double();
+    cluster_min_size_ = this->get_parameter("min_cluster_size").as_int();
+    cluster_max_size_ = this->get_parameter("max_cluster_size").as_int();
+    leaf_size_ = this->get_parameter("leaf_size").as_double();
+    roi_width_ = this->get_parameter("roi_width").as_double();
+    enable_visualization_ = this->get_parameter("enable_visualization").as_bool();
+    enable_calculate_process_time_ = this->get_parameter("enable_calculate_process_time").as_bool();
+    enable_use_roi_ = this->get_parameter("enable_use_roi").as_bool();
+    enable_downsample_ = this->get_parameter("enable_downsample").as_bool();
+    segment_ground_type_ = this->get_parameter("segment_ground_type").as_int();
+    plane_point_percent_ = this->get_parameter("plane_point_percent").as_double();
+
+    // 打印参数值
     RCLCPP_INFO(this->get_logger(), "max_height: %f", max_height_);
     RCLCPP_INFO(this->get_logger(), "min_height: %f", min_height_);
     RCLCPP_INFO(this->get_logger(), "vehicle_height: %f", vehicle_height_);
@@ -155,7 +165,7 @@ void PerceptionNode::InitParameters(const std::string &yaml_file_path) {
     RCLCPP_INFO(this->get_logger(), "leaf_size: %f", leaf_size_);
     RCLCPP_INFO(this->get_logger(), "roi_width: %f", roi_width_);
     RCLCPP_INFO(this->get_logger(), "enable_visualization: %d", enable_visualization_);
-    RCLCPP_INFO(this->get_logger(), "enable_step_process_time: %d", enable_calculate_process_time_);
+    RCLCPP_INFO(this->get_logger(), "enable_calculate_process_time: %d", enable_calculate_process_time_);
     RCLCPP_INFO(this->get_logger(), "enable_use_roi: %d", enable_use_roi_);
     RCLCPP_INFO(this->get_logger(), "enable_downsample: %d", enable_downsample_);
     RCLCPP_INFO(this->get_logger(), "segment_ground_type: %d", segment_ground_type_);

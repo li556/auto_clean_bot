@@ -1,5 +1,0 @@
-perception_node:
-  ros__parameters:
-    param1: 10
-    param2: "example"
-    param3: true
