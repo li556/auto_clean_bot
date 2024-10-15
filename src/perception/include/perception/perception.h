@@ -37,7 +37,10 @@ class PerceptionNode : public rclcpp::Node {
     void PublishPointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr &cloud,
                            const rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr &publisher);
 
-    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr lidar_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr front_lidar_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr left_lidar_sub_;
+    rclcpp::Subscription<sensor_msgs::msg::PointCloud2>::SharedPtr right_lidar_sub_;
+    // TODO：相机的订阅和处理
     rclcpp::Publisher<bot_msg::msg::Obstacles>::SharedPtr obstacle_pub_;
     rclcpp::Publisher<visualization_msgs::msg::Marker>::SharedPtr marker_pub_;
     std::shared_ptr<tf2_ros::TransformListener> tf_listener_;
@@ -84,4 +87,14 @@ class PerceptionNode : public rclcpp::Node {
     bool enable_calculate_process_time_; // 是否计算单步处理时间
     bool enable_downsample_;             // 是否进行下采样
     int segment_ground_type_;            // 地面分割算法类型
+
+    std::string frame_id_;           // 坐标系名称
+    bool is_use_front_lidar_;        // 是否使用前雷达
+    std::string front_lidar_topic_;  // 前雷达的 topic
+    bool is_use_left_lidar_;         // 是否使用左雷达
+    std::string left_lidar_topic_;   // 左雷达的 topic
+    bool is_use_right_lidar_;        // 是否使用右雷达
+    std::string right_lidar_topic_;  // 右雷达的 topic
+    bool is_use_front_camera_;       // 是否使用前相机
+    std::string front_camera_topic_; // 前相机的 topic
 };

@@ -12,14 +12,19 @@
 // #include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 PerceptionNode::PerceptionNode() : Node("perception_node") {
-    lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-        "/ouster/points", 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
+    // 加载yaml配置参数
+    InitParameters();
+    if (is_use_front_lidar_)
+        front_lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+            front_lidar_topic_, 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
+    // TODO:针对于左向和右向的激光雷达，需要设计不同的处理函数
+    if (is_use_left_lidar_)
+        left_lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+            left_lidar_topic_, 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
+    if (is_use_right_lidar_)
+        right_lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
+            right_lidar_topic_, 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
 
-    // lidar_sub_ = this->create_subscription<sensor_msgs::msg::PointCloud2>(
-    //     "/lidar/os_points", 10, std::bind(&PerceptionNode::PointClould2Callback, this, std::placeholders::_1));
-    // radar_sub_ = this->create_subscription<conti_radar::msg::RadarInfoArray>(
-    //     "/radar/info_array", 10, std::bind(&PerceptionNode::RadarInfoArrayCallback, this,
-    //     std::placeholders::_1));
     obstacle_pub_ = this->create_publisher<bot_msg::msg::Obstacles>("/perception/obstacles", 10);
     marker_pub_ = this->create_publisher<visualization_msgs::msg::Marker>("/perception/marker", 10);
     tf_buffer_ = std::make_unique<tf2_ros::Buffer>(this->get_clock());
@@ -33,12 +38,11 @@ PerceptionNode::PerceptionNode() : Node("perception_node") {
     ground_seg_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/ground_seg_cloud", 10);
     clustered_cloud_pub_ = this->create_publisher<sensor_msgs::msg::PointCloud2>("/perception/clustered_cloud", 10);
 #endif
-    // 加载yaml配置参数
-    InitParameters();
-    // 初始化静态变换 broadcaster
+    // 发布静态变换
     InitStaticTransformBroadcaster();
 }
 
+// TODO：静态变换的发布器，放置到专门的包中
 void PerceptionNode::InitStaticTransformBroadcaster() {
     // 设置默认值并声明参数
     this->declare_parameter<double>("lidar_base_x", 0.0);
@@ -132,6 +136,15 @@ void PerceptionNode::InitParameters() {
     this->declare_parameter<bool>("enable_downsample", false);
     this->declare_parameter<int>("segment_ground_type", 1);
     this->declare_parameter<float>("plane_point_percent", 0.5);
+    this->declare_parameter<bool>("is_use_front_lidar", false);
+    this->declare_parameter<bool>("is_use_right_lidar", false);
+    this->declare_parameter<bool>("is_use_left_lidar", false);
+    this->declare_parameter<bool>("is_use_front_camera", false);
+    this->declare_parameter<std::string>("front_lidar_topic", "drivers/front_lidar");
+    this->declare_parameter<std::string>("left_lidar_topic", "drivers/left_lidar");
+    this->declare_parameter<std::string>("right_lidar_topic", "drivers/right_lidar");
+    this->declare_parameter<std::string>("front_camera_topic", "drivers/front_camera");
+    this->declare_parameter<std::string>("frame_id", "base_link");
 
     // 获取参数值
     max_height_ = this->get_parameter("max_height").as_double();
@@ -151,6 +164,15 @@ void PerceptionNode::InitParameters() {
     enable_downsample_ = this->get_parameter("enable_downsample").as_bool();
     segment_ground_type_ = this->get_parameter("segment_ground_type").as_int();
     plane_point_percent_ = this->get_parameter("plane_point_percent").as_double();
+    is_use_front_lidar_ = this->get_parameter("is_use_front_lidar").as_bool();
+    is_use_right_lidar_ = this->get_parameter("is_use_right_lidar").as_bool();
+    is_use_left_lidar_ = this->get_parameter("is_use_left_lidar").as_bool();
+    is_use_front_camera_ = this->get_parameter("is_use_front_camera").as_bool();
+    front_lidar_topic_ = this->get_parameter("front_lidar_topic").as_string();
+    left_lidar_topic_ = this->get_parameter("left_lidar_topic").as_string();
+    right_lidar_topic_ = this->get_parameter("right_lidar_topic").as_string();
+    front_camera_topic_ = this->get_parameter("front_camera_topic").as_string();
+    frame_id_ = this->get_parameter("frame_id").as_string();
 
     // 打印参数值
     RCLCPP_INFO(this->get_logger(), "max_height: %f", max_height_);
@@ -170,6 +192,20 @@ void PerceptionNode::InitParameters() {
     RCLCPP_INFO(this->get_logger(), "enable_downsample: %d", enable_downsample_);
     RCLCPP_INFO(this->get_logger(), "segment_ground_type: %d", segment_ground_type_);
     RCLCPP_INFO(this->get_logger(), "plane_point_percent: %f", plane_point_percent_);
+    RCLCPP_INFO(this->get_logger(), "frame_id: %s", frame_id_.c_str());
+
+    RCLCPP_INFO(this->get_logger(), "is_use_front_lidar: %d", is_use_front_lidar_);
+    if (is_use_front_lidar_)
+        RCLCPP_INFO(this->get_logger(), "front_lidar_topic: %s", front_lidar_topic_.c_str());
+    RCLCPP_INFO(this->get_logger(), "is_use_right_lidar: %d", is_use_right_lidar_);
+    if (is_use_right_lidar_)
+        RCLCPP_INFO(this->get_logger(), "right_lidar_topic: %s", right_lidar_topic_.c_str());
+    RCLCPP_INFO(this->get_logger(), "is_use_left_lidar: %d", is_use_left_lidar_);
+    if (is_use_left_lidar_)
+        RCLCPP_INFO(this->get_logger(), "left_lidar_topic: %s", left_lidar_topic_.c_str());
+    RCLCPP_INFO(this->get_logger(), "is_use_front_camera: %d", is_use_front_camera_);
+    if (is_use_front_camera_)
+        RCLCPP_INFO(this->get_logger(), "front_camera_topic: %s", front_camera_topic_.c_str());
 }
 
 /**
@@ -204,7 +240,7 @@ visualization_msgs::msg::Marker PerceptionNode::MakeObstacleMarker(int x, int y,
                                                                    int height, int obstacles_type) {
     static int marker_id = 0;
     auto marker = visualization_msgs::msg::Marker();
-    marker.header.frame_id = "os_lidar";
+    marker.header.frame_id = frame_id_;
     marker.header.stamp = this->get_clock()->now();
     marker.action = visualization_msgs::msg::Marker::ADD;
     marker.pose.orientation.w = 1.0; // 无旋转
@@ -292,7 +328,7 @@ visualization_msgs::msg::Marker PerceptionNode::MakeObstacleMarker(const bot_msg
                                                                    int obstacles_type) {
     static int marker_id = 0;
     auto marker = visualization_msgs::msg::Marker();
-    marker.header.frame_id = "os_lidar";
+    marker.header.frame_id = frame_id_;
     marker.header.stamp = this->get_clock()->now();
     marker.action = visualization_msgs::msg::Marker::ADD;
     marker.pose.orientation.w = 1.0; // 无旋转
@@ -456,7 +492,7 @@ void PerceptionNode::PublishPointCloud(const pcl::PointCloud<pcl::PointXYZ>::Ptr
     sensor_msgs::msg::PointCloud2 output_cloud;
     pcl::toROSMsg(*cloud, output_cloud);
     output_cloud.header.stamp = this->get_clock()->now();
-    output_cloud.header.frame_id = "os_lidar"; // 根据实际的坐标系设置
+    output_cloud.header.frame_id = frame_id_; // 根据实际的坐标系设置
     publisher->publish(output_cloud);
 }
 
@@ -711,7 +747,7 @@ void PerceptionNode::PointClould2Callback(const sensor_msgs::msg::PointCloud2::S
     RCLCPP_INFO(this->get_logger(), "Lidar:Number of obstacles detected: %d", j);
     if (obstacle_array_msg.obstacles.size() > 0) {
         obstacle_array_msg.header.stamp = this->get_clock()->now();
-        obstacle_array_msg.header.frame_id = "os_lidar";
+        obstacle_array_msg.header.frame_id = frame_id_;
         obstacle_pub_->publish(obstacle_array_msg);
         FillAndPublishObstacleMarker(obstacle_array_msg, 1);
     }

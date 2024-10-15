@@ -15,16 +15,11 @@ def generate_launch_description():
         default_value='info',
         description='Logging level'
     )
+    # 获取配置文件路径
     perception_pkg_dir = get_package_share_directory('perception')
     params_file_path = \
         Path(perception_pkg_dir) / 'config' / 'perception_config.yaml'
     print(params_file_path)
-    # params_file = LaunchConfiguration(params_file_path)
-    # params_file_arg = DeclareLaunchArgument('params_file',
-    #                                         default_value=str(
-    #                                             params_file),
-    #                                         description='name or path to the parameters file to use.')
-    
 
     perception_node = Node(
             package='perception',
