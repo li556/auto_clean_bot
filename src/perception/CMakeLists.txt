@@ -47,7 +47,7 @@ include_directories(
 )
 
 # Create your node executable
-add_executable(perception_node src/perception.cpp src/main.cpp)
+add_executable(perception_node src/perception.cpp)
 
 # Add PCL definitions and link directories
 add_definitions(${PCL_DEFINITIONS})

@@ -757,3 +757,13 @@ void PerceptionNode::PointClould2Callback(const sensor_msgs::msg::PointCloud2::S
     RCLCPP_INFO(this->get_logger(), "process time , %.2f", time_diff.seconds());
     return;
 }
+
+// 节点注册
+int main(int argc, char *argv[]) {
+    rclcpp::init(argc, argv);
+    auto node = std::make_shared<PerceptionNode>();
+    RCLCPP_INFO(node->get_logger(), "Perception node started");
+    rclcpp::spin(node);
+    rclcpp::shutdown();
+    return 0;
+}
