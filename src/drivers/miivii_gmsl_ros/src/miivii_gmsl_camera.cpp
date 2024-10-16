@@ -89,6 +89,7 @@ bool MiiviiGmslCamera::fileExists(const std::string &filename) {
     return file.good();
 }
 
+// TODO：目前相机的内参矩阵未被正确的设置，需要根据相机的实际参数进行设置
 sensor_msgs::msg::CameraInfo MiiviiGmslCamera::createCameraInfoFromYAML(const std::string &filepath) {
     if (filepath.empty() || !fileExists(filepath)) {
         RCLCPP_INFO(this->get_logger(), "Params file is empty or not exist!");
@@ -100,7 +101,6 @@ sensor_msgs::msg::CameraInfo MiiviiGmslCamera::createCameraInfoFromYAML(const st
     sensor_msgs::msg::CameraInfo camera_info;
     try {
         YAML::Node config = YAML::LoadFile(filepath);
-
         camera_info.height = config["image_height"].as<int>();
         camera_info.width = config["image_width"].as<int>();
         // camera_info.header.frame_id = config["camera_name"].as<std::string>();
