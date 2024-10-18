@@ -1,4 +1,3 @@
-std_msgs/Header header
 # 障碍物具体消息
 uint32 id
 float64 position_x 

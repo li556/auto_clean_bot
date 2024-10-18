@@ -1,0 +1,45 @@
+perception_node:
+  ros__parameters:
+    # 传感器以及车辆参数
+    max_height: 3.0
+    min_height: 0.0
+    vehicle_height: 0.4
+    vehicle_length: 0.4
+    vehicle_width: 0.4
+    # 聚类算法相关参数
+    roi_width: 1.0
+    cluster_tolerance: 0.4 # 最小可容忍点云点距离，单位米
+    min_cluster_size: 20
+    max_cluster_size: 30000
+    leaf_size: 0.1
+    plane_point_percent : 0.5 # 平面内点云点比例
+    # 坐标系转换参数
+    lidar_base_x: 0.0
+    lidar_base_y: 0.0
+    lidar_base_z: 0.0
+    lidar_base_yaw: 180.0
+    lidar_base_pitch: 0.0
+    lidar_base_roll: 0.0
+    radar_base_x: 0.0
+    radar_base_y: 0.0
+    radar_base_z: 0.0
+    radar_base_yaw: 0.0
+    radar_base_pitch: 0.0
+    radar_base_roll: 0.0
+    # 调试参数
+    enable_visualization: false
+    enable_use_roi: false
+    enable_calculate_process_time: false
+    enable_downsample: true
+    segment_ground_type: 1 # 1:algorithm, 2:based on height
+    # 相关订阅参数
+    is_use_front_lidar: true
+    front_lidar_topic: drivers/front_lidar
+    is_use_left_lidar: false
+    left_lidar_topic: drivers/left_lidar
+    is_use_right_lidar: false
+    right_lidar_topic: drivers/right_lidar
+    is_use_front_camera: false
+    front_camera_topic: drivers/front_camera
+    # 消息ID
+    frame_id: base_link

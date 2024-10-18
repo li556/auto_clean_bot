@@ -31,6 +31,15 @@
   rosdep install --from-paths src --ignore-src -r -y
   ```
   国内使用 rosdepc, 可以使用[一键脚本](https://github.com/fishros/install)安装
+
   ```
   rosdep install --from-paths src --ignore-src -r -y
   ```
+  ### 2. 节点包文件
+- ### 2.1 lane_detector
+
+
+  - ```bash
+
+    ```
+-
